@@ -28,16 +28,33 @@ paths:
         - Basic: []
       tags:
         - Client
+      parameters:
+        - name: region
+          description: code of the region (eg. dubrovnik) we want clients from
+          in: query
+          type: string
+        - name: city
+          description: code of the city (eg. medulin) we want clients from
+          in: query
+          type: string
+        - name: page
+          description: Number of the page we want to see results for
+          in: query
+          type: integer
+          format: int32
+        - name: records
+          description: How many records we would like to recieve on one page
+          in: query
+          type: integer
+          format: int32
       responses:
         200:
           description: Successful response
           schema:
-            type: array
-            items:
+            type: object
+            properties:
               pagination:
-                type: array
-                items: 
-                  $ref: '#/definitions/Pagination'
+                $ref: '#/definitions/Pagination'
               clients:
                 type: array
                 items:
