@@ -17,6 +17,43 @@ tags:
   - name: Location
     description: All calls which are dealing with the location (region, city etc)
 paths:
+  /clients:
+    get:
+      summary: Retrieve the list of clients
+      description: |
+        Returns list of active clients. For each one of them system provides basic information which should be enough to show client's main profile card.
+        The result can be affected by using optional parameters.
+        System does not return all valid results, but supports pagination.
+      security:
+        - Basic: []
+      tags:
+        - Client
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: array
+            items:
+              pagination:
+                type: array
+                items: 
+                  $ref: '#/definitions/Pagination'
+              clients:
+                type: array
+                items:
+                  $ref: '#/definitions/Client'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Runtime error
+          schema:
+            $ref: '#/definitions/Error'
   /regions:
     get:
       summary: Retrieve the list of regions
@@ -127,7 +164,7 @@ paths:
       parameters:
         - name: region_id
           in: path
-          description: ID of the region s
+          description: ID of the region
           type: integer
           format: int32
           required: true
@@ -185,6 +222,28 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/HateoasLink' 
+  Client:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      name:
+        type: string
+      city:
+        type: string
+      region:
+        type: string
+      sea:
+        type: integer
+        format: int32
+      center:
+        type: integer
+        format: int32
+      links:
+        type: array
+        items:
+          $ref: '#/definitions/HateoasLink' 
   Forecast:
     type: object
     properties:
@@ -220,6 +279,39 @@ definitions:
     properties:
       href:
         type: string
+  Pagination:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int32
+      per_page:
+        type: integer
+        format: int32
+      pages:
+        type: integer
+        format: int32
+      page:
+        type: integer
+        format: int32
+      is_first:
+        type: integer
+        format: int32
+      is_last:
+        type: integer
+        format: int32
+      has_next:
+        type: integer
+        format: int32
+      has_previous:
+        type: integer
+        format: int32
+      page_start:
+        type: integer
+        format: int32
+      page_end:
+        type: integer
+        format: int32
   Region:
     type: object
     properties:
