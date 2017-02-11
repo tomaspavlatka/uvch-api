@@ -11,6 +11,8 @@ produces:
 securityDefinitions:
   Basic:
     type: basic
+    description: |
+      **It is not supported yet**, but will be implemented before going to public. For now, you can provide any combination of username / password. Even though the system does not even check whether the header is present, it's good idea to implement it so the system will not break when the support for Basic HTTP Authorization is added.
 tags:
   - name: Client
     description: Everything related to client
@@ -109,6 +111,46 @@ paths:
           description: Runtime error
           schema:
             $ref: '#/definitions/Error'
+  /clients/{client_id}/photos:
+    get:
+      summary: Retrieve list of client's photos
+      description: |
+        Returns list of the photos the client has added for his main profile.
+      security:
+        - Basic: []
+      tags:
+        - Client
+      parameters:
+        - name: client_id
+          description: Id of the client we want photos for
+          in: path
+          type: integer
+          format: int32
+          required: true
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+              photos: 
+                type: array
+                items:
+                  type: string
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Runtime error
+          schema:
+            $ref: '#/definitions/Error'
   /clients/{client_id}/units:
     get:
       summary: Retrieve list of client's accommodation units
@@ -120,7 +162,7 @@ paths:
         - Client
       parameters:
         - name: client_id
-          description: Id of the client we want a profile for
+          description: Id of the client we want accommodation units for
           in: path
           type: integer
           format: int32
