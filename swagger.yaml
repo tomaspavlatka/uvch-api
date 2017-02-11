@@ -4,8 +4,8 @@ info:
   title: Uvch.cz API
   description: |
     Full description of current API version supported on uvch.cz and other related websites
-# host: www.e-croatia.com
-# basePath: /api/v1
+host: www.e-croatia.com
+basePath: /api/v1
 produces:
   - application/json
 securityDefinitions:
@@ -76,7 +76,6 @@ paths:
       summary: Retrieve information about certain client
       description: |
         Returns more information about the client. The basic information set can get extended by using fields parameter.
-        
       security:
         - Basic: []
       tags:
