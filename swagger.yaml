@@ -265,11 +265,14 @@ definitions:
     type: object
     properties:
       update:
-        type: dateTime
+        type: string
+        format: date-time
       sunrise:
-        type: dateTime
+        type: string
+        format: date-time
       sunset:
-        type: dateTime
+        type: string
+        format: date-time
       temperature:
         type: integer
         format: int32
