@@ -280,15 +280,18 @@ definitions:
       temperature_name:
         type: string
       wind_direction:
-        type: float
+        type: number
+        format: float
       wind_direction_code:
         type: string
       wind_speed:
-        type: float
+        type: number
+        format: float
       wind_speed_name:
         type: string
       pressure:
-        type: float
+        type: number
+        format: float
       pressure_unit:
         type: string
   HateoasLink:
