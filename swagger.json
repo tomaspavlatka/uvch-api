@@ -1,0 +1,1467 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.3",
+    "title" : "Uvch.cz API",
+    "description" : "Full description of current API version supported on uvch.cz and other related websites\n"
+  },
+  "produces" : [ "application/json" ],
+  "consumes" : [ "multipart/form-data" ],
+  "securityDefinitions" : {
+    "Basic" : {
+      "type" : "basic",
+      "description" : "**It is not supported yet**, but will be implemented before going to public. For now, you can provide any combination of username / password. Even though the system does not even check whether the header is present, it's good idea to implement it so the system will not break when the support for Basic HTTP Authorization is added.\n"
+    }
+  },
+  "tags" : [ {
+    "name" : "AccommodationUnit",
+    "description" : "All calls which are dealing with the accommodation unit"
+  }, {
+    "name" : "Client",
+    "description" : "Everything related to client"
+  }, {
+    "name" : "Location",
+    "description" : "All calls which are dealing with the location (region, city etc)"
+  }, {
+    "name" : "Others",
+    "description" : "All the call which cannot be groupped"
+  } ],
+  "paths" : {
+    "/aut_token" : {
+      "post" : {
+        "summary" : "Retrieve auth_token for a client",
+        "description" : "Each client needs an auth_token to communicate with the rest of the API. \nThis endpoint will provide such auth_token against valid combination of `username` and `password`\n",
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "usename",
+          "in" : "formData",
+          "type" : "string",
+          "description" : "Username of the user\n"
+        }, {
+          "name" : "password",
+          "in" : "formData",
+          "type" : "string",
+          "description" : "Password of the user\n"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "auth_token" : {
+                  "type" : "string",
+                  "example" : "asdfasfafadsfas"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/lastminute" : {
+      "get" : {
+        "summary" : "Retrieve the list of last minute offers",
+        "description" : "Returns the information about last minute offers.\n\nIn order for last-minute offer to be shown, there're some conditions to be passed\n\n1. Client has an active profile\n2. Accommodation unit is active\n3. Last-minute offer has start date within specified range\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Others" ],
+        "parameters" : [ {
+          "name" : "start",
+          "in" : "query",
+          "type" : "string",
+          "description" : "**FORMAT: YYYY-mm-dd, eg. 2017-02-25**\n\nThe starting date from when the last minutes should be checked. \n\nIf you specify eg. 2017-05-01, you want to see all last minute offers which will start from 01.05.2017 (their starting date >= 01.05.2017)\n\nWhen we go live, I will block all requests, with `start` in the past, but right now it's still possible. \n\n**Also, if the value is not provided, the current date is used instead.**\n"
+        }, {
+          "name" : "end",
+          "in" : "query",
+          "type" : "string",
+          "description" : "**FORMAT: YYYY-mm-dd, eg. 2017-02-25**\n\nThe last date when the last minute offer can start. \n\nIf you specify eg. 2017-05-01, you want to see all last-minute offers which will start latest 01.05.2017 (their starting date <= 01.05.2017)\n\nAlso it must be later than `start`\n"
+        }, {
+          "name" : "client",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to insert the ID of the client. \n\nSystem will find only the last-time offers from this specific client\n"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to set up how many maximum items should be returned back\n"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to say which page of the result set you want to receive\n"
+        }, {
+          "name" : "person",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to say how many people must be able to be accommodated in the accommodation unit \n\nThe calculation takes into consideration sum from regular and extra bed - both \"beds\" have same value. \n\nSo in case we have accommodation unit with 5 regular beds and 4 extra beds, the system consider this unit as suitable for up to 9 persons\n"
+        }, {
+          "name" : "sea",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to specify the maximum number of meters from the sea\n"
+        }, {
+          "name" : "center",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to specify the maximum number of meters from the center\n"
+        }, {
+          "name" : "max_price",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to specify the maximum amount for last minute price. Must be greater than 0\n"
+        }, {
+          "name" : "order",
+          "in" : "query",
+          "type" : "string",
+          "description" : "Influence the sorting direction of the response\n\n##### Available options:\n\n* **asc** : 1 -> 10\n* **desc** : 10 -> 1\n"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "type" : "string",
+          "description" : "Gives you an option to influence, how the data will be sorted before returned. \n\n##### Available options:\n\n* **sea** - Distance from the sea\n* **price** - Lastminute price\n* **name** - Name of the client\n* **person** - Number or persons\n"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "pagination" : {
+                  "$ref" : "#/definitions/Pagination"
+                },
+                "lastminutes" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 1987
+                      },
+                      "client_id" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 44
+                      },
+                      "client_name" : {
+                        "type" : "string",
+                        "example" : "Baraban apartments"
+                      },
+                      "client_location" : {
+                        "type" : "string",
+                        "example" : "baraban"
+                      },
+                      "distance_sea" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 100
+                      },
+                      "distance_center" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 200
+                      },
+                      "unit_id" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 15
+                      },
+                      "unit_name" : {
+                        "type" : "string",
+                        "example" : "A 6/6"
+                      },
+                      "regular_bed" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 5
+                      },
+                      "extra_bed" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 7
+                      },
+                      "bedrooms" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 2
+                      },
+                      "region" : {
+                        "type" : "string",
+                        "example" : "kvarner"
+                      },
+                      "region_name" : {
+                        "type" : "string",
+                        "example" : "Region Kvarner"
+                      },
+                      "city_name" : {
+                        "type" : "string",
+                        "example" : "ostrov Rab"
+                      },
+                      "period_start" : {
+                        "type" : "string",
+                        "example" : "2017-05-01"
+                      },
+                      "period_end" : {
+                        "type" : "string",
+                        "example" : "2017-06-01"
+                      },
+                      "original_price" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 600
+                      },
+                      "last_minute_price" : {
+                        "type" : "integer",
+                        "format" : "int32",
+                        "example" : 400
+                      },
+                      "description" : {
+                        "type" : "string",
+                        "example" : "3 bedrooms, big terrasse with sea view,2 toilets,free air-conditioning,free parking, free wi-fi."
+                      },
+                      "has_pool" : {
+                        "type" : "boolean",
+                        "example" : true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/clients" : {
+      "get" : {
+        "summary" : "Retrieve the list of clients",
+        "description" : "Returns list of active clients. For each one of them system provides basic information which should be enough to show client's main profile card.\nThe result can be affected by using optional parameters.\nSystem does not return all valid results, but supports pagination.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "region",
+          "description" : "code of the region (eg. dubrovnik) we want clients from",
+          "in" : "query",
+          "type" : "string"
+        }, {
+          "name" : "city",
+          "description" : "code of the city (eg. medulin) we want clients from",
+          "in" : "query",
+          "type" : "string"
+        }, {
+          "name" : "page",
+          "description" : "Number of the page we want to see results for",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "records",
+          "description" : "How many records we would like to recieve on one page",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "order",
+          "in" : "query",
+          "type" : "string",
+          "description" : "Influence the sorting direction of the response\n\n##### Available options:\n\n* **asc** : 1 -> 10\n* **desc** : 10 -> 1\n"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "type" : "string",
+          "description" : "Gives you an option to influence, how the data will be sorted before returned. \n\n##### Available options:\n\n* **priority** - Clients will be sorted by their priority\n* **created** - Clients will be sorted by the date / time when they created their account\n* **name** - Client will be sorted by their names\n"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "pagination" : {
+                  "$ref" : "#/definitions/Pagination"
+                },
+                "clients" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/Client"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/gps" : {
+      "get" : {
+        "summary" : "Retrive the GPS coordinatinon",
+        "description" : "Returns Latitude and Longitude of the client\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "client_id",
+          "description" : "Id of the client we want to tranfer GPS for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "lat" : {
+                  "type" : "number",
+                  "example" : 1.233
+                },
+                "lng" : {
+                  "type" : "number",
+                  "example" : 3.478
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "summary" : "Transfer GPS from old db",
+        "description" : "Transfers GPS information (latitude, longitude) from old database to the new structure\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "client_id",
+          "description" : "Id of the client we want to tranfer GPS for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. \n"
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}" : {
+      "get" : {
+        "summary" : "Retrieve information about certain client",
+        "description" : "Returns more information about the client. The basic information set can get extended by using fields parameter.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "client_id",
+          "description" : "Id of the client we want a profile for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        }, {
+          "name" : "fields",
+          "description" : "List of optional information you would like to recieve\n\n##### Available options:\n\n* **languages** - list of languages the client speaks\n* **address** - information about the client address\n* **distances** - information about distances from important locations\n* **description** - main description for the client - possible to loacalize by using `locale` option\n",
+          "in" : "query",
+          "type" : "string",
+          "collectionFormat" : "csv"
+        }, {
+          "name" : "locale",
+          "description" : "Possible to localize the response, mostly use in combination with `?fields=description`\n\n##### Available options:\n\n* cz\n* de\n* en\n* fr\n* hr\n* it\n* pl\n",
+          "required" : false,
+          "in" : "query",
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response. \n\nNOTE: The response may vary depending on additional parameters which you can set up, like `fields` or `locale`\n",
+            "schema" : {
+              "$ref" : "#/definitions/ClientProfile"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/photos" : {
+      "get" : {
+        "summary" : "Retrieve list of client's photos",
+        "description" : "Returns list of the photos the client has added for his main profile.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "client_id",
+          "description" : "Id of the client we want photos for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "url" : {
+                  "type" : "string"
+                },
+                "photos" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/units" : {
+      "get" : {
+        "summary" : "Retrieve list of client's accommodation units",
+        "description" : "Returns list of accommodation units which client has. API provides basic information about each of such accommodation unit.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "client_id",
+          "description" : "Id of the client we want accommodation units for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/AccommodationUnit"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/units/{unit_id}" : {
+      "get" : {
+        "summary" : "Retrieve information about certain unit",
+        "description" : "Returns detailed information about certain unit\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "AccommodationUnit" ],
+        "parameters" : [ {
+          "name" : "unit_id",
+          "description" : "Id of the accommodation unit we want detailed information for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        }, {
+          "name" : "fields",
+          "description" : "List of the additional information to be loaded\n\nOptions: \n  * extra_fees\n  * price_lists\n  * accessories\n  * description\n",
+          "in" : "query",
+          "type" : "string",
+          "required" : false
+        }, {
+          "name" : "locale",
+          "description" : "Locale for the translated values, eg. description\n",
+          "in" : "query",
+          "type" : "string",
+          "required" : false
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response\n\nSome of the data listed below depends on the query\n\n* price_lists <- ?fields=price_lists\n* extra_fees <- ?fields=extra_fees\n* accessories <- ?fields=accessories\n* description <- ?fields=description\n",
+            "schema" : {
+              "$ref" : "#/definitions/AccommodationUnitProfile"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/units/{unit_id}/icalc" : {
+      "post" : {
+        "summary" : "Set url for iCalc",
+        "description" : "Possible to set new url for iCalc calendar.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "AccommodationUnit" ],
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "unit_id",
+          "description" : "Id of the accommodation unit we want detailed information for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        }, {
+          "name" : "body",
+          "in" : "body",
+          "schema" : {
+            "type" : "object",
+            "properties" : {
+              "icalc" : {
+                "type" : "string",
+                "description" : "Valid Url for iCalc calendar"
+              }
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "result" : {
+                  "type" : "boolean",
+                  "example" : true
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/regions" : {
+      "get" : {
+        "summary" : "Retrieve the list of regions",
+        "description" : "Returns list of current supported regions with basic information \nabout each one of them.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Location" ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Region"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/regions/{region_id}" : {
+      "get" : {
+        "summary" : "Retrieve information about the region",
+        "description" : "Returns more information about the region itself. Also provides useful links where to go from here.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Location" ],
+        "parameters" : [ {
+          "name" : "region_id",
+          "in" : "path",
+          "description" : "ID of the region",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/Region"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/regions/{region_id}/cities" : {
+      "get" : {
+        "summary" : "Retrieve the list of cities within the region",
+        "description" : "Returns list of cities within selected region. Each city contain basic information about itself and list of links to retrieve more inforamtation about each one.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Location" ],
+        "parameters" : [ {
+          "name" : "region_id",
+          "in" : "path",
+          "description" : "ID of the region",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/City"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/regions/{region_id}/cities/{city_id}" : {
+      "get" : {
+        "summary" : "Retrieve information about the city",
+        "description" : "Returns more detailed information about the city. \nThe requirements are that the city belongs to the region.\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Location" ],
+        "parameters" : [ {
+          "name" : "region_id",
+          "in" : "path",
+          "description" : "ID of the region",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        }, {
+          "name" : "city_id",
+          "in" : "path",
+          "description" : "ID of the city",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "$ref" : "#/definitions/CityProfile"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "AccommodationUnit" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "regular_bed" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extra_bed" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "unit_size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "bedrooms" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/HateoasLink"
+          }
+        }
+      }
+    },
+    "AccommodationUnitProfile" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "client_id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "unit_size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "regular_bed" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extra_bed" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "bedrooms" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/HateoasLink"
+          }
+        },
+        "price_lists" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "properties" : {
+              "price" : {
+                "type" : "integer",
+                "format" : "int32",
+                "example" : 50
+              },
+              "start" : {
+                "type" : "string",
+                "example" : "2017-02-25"
+              },
+              "end" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "extra_fees" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "properties" : {
+              "code" : {
+                "type" : "string",
+                "example" : "extra_person"
+              },
+              "price" : {
+                "type" : "integer",
+                "format" : "int32",
+                "example" : 100
+              },
+              "help_number" : {
+                "type" : "integer",
+                "format" : "int32",
+                "example" : 0
+              }
+            }
+          }
+        },
+        "description" : {
+          "type" : "string",
+          "example" : "the unit is the best, blablabla ..."
+        },
+        "accessories" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "example" : "air_condition"
+          }
+        }
+      }
+    },
+    "Address" : {
+      "type" : "object",
+      "properties" : {
+        "city" : {
+          "type" : "string"
+        },
+        "city_name" : {
+          "type" : "string"
+        },
+        "region" : {
+          "type" : "string"
+        },
+        "region_name" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        }
+      }
+    },
+    "City" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "code" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/HateoasLink"
+          }
+        }
+      }
+    },
+    "CityProfile" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "code" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "forecast" : {
+          "$ref" : "#/definitions/Forecast"
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/HateoasLink"
+          }
+        }
+      }
+    },
+    "Distances" : {
+      "type" : "object",
+      "properties" : {
+        "sea" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "beach" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "center" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "restaurant" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "post" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "supermarket" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "doctor" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "playgroud" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "petrol_station" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "atm" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pharmacy" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "bus" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Client" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "apartment_name" : {
+          "type" : "string"
+        },
+        "location" : {
+          "type" : "string"
+        },
+        "external_url" : {
+          "type" : "string"
+        },
+        "created" : {
+          "type" : "string"
+        },
+        "address" : {
+          "$ref" : "#/definitions/Address"
+        },
+        "distances" : {
+          "$ref" : "#/definitions/Distances"
+        },
+        "min_price" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "rating" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "has_last_minute" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "unit_extras" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "extras" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "available_units" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AccommodationUnit"
+          }
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/HateoasLink"
+          }
+        }
+      }
+    },
+    "ClientProfile" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "fax" : {
+          "type" : "string"
+        },
+        "mobile" : {
+          "type" : "string"
+        },
+        "phone" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "object",
+          "description" : "only when address is listed in fields params",
+          "properties" : {
+            "address" : {
+              "type" : "string"
+            },
+            "city" : {
+              "type" : "string"
+            },
+            "region" : {
+              "type" : "string"
+            },
+            "district" : {
+              "type" : "string"
+            }
+          }
+        },
+        "languages" : {
+          "type" : "array",
+          "description" : "only when languages is listed in fields params",
+          "items" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "integer",
+                "format" : "int32"
+              },
+              "code" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/HateoasLink"
+          }
+        }
+      }
+    },
+    "Forecast" : {
+      "type" : "object",
+      "properties" : {
+        "update" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "sunrise" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "sunset" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "temperature" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "temperature_unit" : {
+          "type" : "string"
+        },
+        "temperature_code" : {
+          "type" : "string"
+        },
+        "temperature_name" : {
+          "type" : "string"
+        },
+        "wind_direction" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "wind_direction_code" : {
+          "type" : "string"
+        },
+        "wind_speed" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "wind_speed_name" : {
+          "type" : "string"
+        },
+        "pressure" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "pressure_unit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "HateoasLink" : {
+      "type" : "object",
+      "properties" : {
+        "profile" : {
+          "type" : "object",
+          "properties" : {
+            "href" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "Pagination" : {
+      "type" : "object",
+      "properties" : {
+        "total" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "per_page" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "page" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "is_first" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "is_last" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "has_next" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "has_previous" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "page_start" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "page_end" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Region" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "code" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "links" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/HateoasLink"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      }
+    }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/pavlatka/Uvch.cz/1.0",
+  "schemes" : [ "https" ]
+}
