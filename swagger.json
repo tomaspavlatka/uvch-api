@@ -83,7 +83,7 @@
         }
       }
     },
-    "/lastminute" : {
+    "/lastminutes" : {
       "get" : {
         "summary" : "Retrieve the list of last minute offers",
         "description" : "Returns the information about last minute offers.\n\nIn order for last-minute offer to be shown, there're some conditions to be passed\n\n1. Client has an active profile\n2. Accommodation unit is active\n3. Last-minute offer has start date within specified range\n",
