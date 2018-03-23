@@ -27,7 +27,7 @@
     "description" : "All the call which cannot be groupped"
   } ],
   "paths" : {
-    "/aut_token" : {
+    "/auth_token" : {
       "post" : {
         "summary" : "Retrieve auth_token for a client",
         "description" : "Each client needs an auth_token to communicate with the rest of the API. \nThis endpoint will provide such auth_token against valid combination of `username` and `password`\n",
@@ -142,7 +142,13 @@
           "in" : "query",
           "type" : "integer",
           "format" : "int32",
-          "description" : "Possible to specify the maximum amount for last minute price. Must be greater than 0\n"
+          "description" : "Possible to specify the maximum price for last minute price. Must be greater than 0\n"
+        }, {
+          "name" : "min_price",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to specify the minimum price for last minute price. Must be greater than 0\n"
         }, {
           "name" : "features",
           "in" : "query",
