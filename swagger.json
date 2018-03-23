@@ -312,6 +312,148 @@
         }
       }
     },
+    "/lastminute/{lastminute_id}" : {
+      "get" : {
+        "summary" : "Retrieve profile information for specific LastMinute offer",
+        "description" : "Returns the information about certain lastMinute offer\n\n1. Client has an active profile\n2. Accommodation unit is active\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Others" ],
+        "parameters" : [ {
+          "name" : "lastminute_id",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "ID of the last minute offer you want data for\n",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "id" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 1987
+                },
+                "client_id" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 44
+                },
+                "client_name" : {
+                  "type" : "string",
+                  "example" : "Baraban apartments"
+                },
+                "client_location" : {
+                  "type" : "string",
+                  "example" : "baraban"
+                },
+                "distance_sea" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 100
+                },
+                "distance_center" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 200
+                },
+                "unit_id" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 15
+                },
+                "unit_name" : {
+                  "type" : "string",
+                  "example" : "A 6/6"
+                },
+                "regular_bed" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 5
+                },
+                "extra_bed" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 7
+                },
+                "bedrooms" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 2
+                },
+                "region" : {
+                  "type" : "string",
+                  "example" : "kvarner"
+                },
+                "region_name" : {
+                  "type" : "string",
+                  "example" : "Region Kvarner"
+                },
+                "city_name" : {
+                  "type" : "string",
+                  "example" : "ostrov Rab"
+                },
+                "period_start" : {
+                  "type" : "string",
+                  "example" : "2017-05-01"
+                },
+                "period_end" : {
+                  "type" : "string",
+                  "example" : "2017-06-01"
+                },
+                "original_price" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 600
+                },
+                "last_minute_price" : {
+                  "type" : "integer",
+                  "format" : "int32",
+                  "example" : 400
+                },
+                "description" : {
+                  "type" : "string",
+                  "example" : "3 bedrooms, big terrasse with sea view,2 toilets,free air-conditioning,free parking, free wi-fi."
+                },
+                "has_pool" : {
+                  "type" : "boolean",
+                  "example" : true
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/clients" : {
       "get" : {
         "summary" : "Retrieve the list of clients",
