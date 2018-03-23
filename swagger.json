@@ -108,6 +108,11 @@
           "format" : "int32",
           "description" : "Possible to insert the ID of the client. \n\nSystem will find only the last-time offers from this specific client\n"
         }, {
+          "name" : "region",
+          "in" : "query",
+          "type" : "string",
+          "description" : "Possible to set up the region the last minute must be from\n\n#### Available options:\n* **dubrovnik**\n* **istrie**\n* **kvarner**\n* **sibenik**\n* **split**\n* **zadar**\n"
+        }, {
           "name" : "limit",
           "in" : "query",
           "type" : "integer",
