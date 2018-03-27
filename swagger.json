@@ -108,6 +108,11 @@
           "format" : "int32",
           "description" : "Possible to insert the ID of the client. \n\nSystem will find only the last-time offers from this specific client\n"
         }, {
+          "name" : "destination",
+          "in" : "query",
+          "type" : "string",
+          "description" : "Possible to search by keyword in cities / regions\n"
+        }, {
           "name" : "region",
           "in" : "query",
           "type" : "string",
