@@ -32,6 +32,7 @@
         "summary" : "Retrieve auth_token for a client",
         "description" : "Each client needs an auth_token to communicate with the rest of the API. \nThis endpoint will provide such auth_token against valid combination of `username` and `password`\n",
         "tags" : [ "Client" ],
+        "consumes" : [ "multipart/form-data" ],
         "parameters" : [ {
           "name" : "usename",
           "in" : "formData",
@@ -806,9 +807,6 @@
       "get" : {
         "summary" : "Retrieve information about certain unit",
         "description" : "Returns detailed information about certain unit\n",
-        "security" : [ {
-          "Basic" : [ ]
-        } ],
         "tags" : [ "AccommodationUnit" ],
         "parameters" : [ {
           "name" : "unit_id",
