@@ -491,6 +491,16 @@
           "type" : "integer",
           "format" : "int32"
         }, {
+          "name" : "start",
+          "in" : "query",
+          "type" : "string",
+          "description" : "**FORMAT: YYYY-mm-dd, eg. 2017-02-25**\n\nThis is used to check availability + eg. min price\n\n**Also, if the value is not provided, the current date is used instead.**\n"
+        }, {
+          "name" : "end",
+          "in" : "query",
+          "type" : "string",
+          "description" : "**FORMAT: YYYY-mm-dd, eg. 2017-02-25**\n\nUsed to check availability + eg. min price.\n\nAlso it must be later than `start`\n"
+        }, {
           "name" : "order",
           "in" : "query",
           "type" : "string",
