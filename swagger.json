@@ -479,6 +479,18 @@
           "type" : "string",
           "description" : "Possible to set up the city the last minute must be from\n\n**WARNING** - it's still possible to send a request for the `city` and `region`, but invalid combination will not lead to the response error, but only to empty response data\n\n#### Available options:\n* **babinopolje**\n* **barbariga**\n* **baskavoda**\n* **betina**\n* **bibinje**\n* **biograd**\n* **blace**\n* **blato**\n* **brac**\n* **brela**\n* **brijesta**\n* **cavtat**\n* **cres**\n* **crikvenica**\n* **drvenik**\n* **drvenikveli**\n* **dubrovnik**\n* **dugirat**\n* **fazana**\n* **filipijakov**\n* **gradac**\n* **hvar**\n* **igrane**\n* **ist**\n* **jablanac**\n* **janjina**\n* **karlobag**\n* **kastela**\n* **klek**\n* **knin**\n* **korcula**\n* **kraljevica**\n* **krk**\n* **kupari**\n* **labin**\n* **lastovo**\n* **lovran**\n* **lumbarda**\n* **makarska**\n* **malilosinj**\n* **marina**\n* **martinscica**\n* **maslenica**\n* **medulin**\n* **metkovic**\n* **moscenickadraga**\n* **murter**\n* **nin**\n* **novalja**\n* **novigrad**\n* **novigradzadar**\n* **novivinodolski**\n* **olib**\n* **omis**\n* **omisalj**\n* **opatija**\n* **orebic**\n* **osor**\n* **pag**\n* **paklenica**\n* **pakostane**\n* **pasman**\n* **petrcane**\n* **pirovac**\n* **plitvice**\n* **podgora**\n* **podstrana**\n* **porec**\n* **primosten**\n* **privlaka**\n* **pula**\n* **rab**\n* **rabac**\n* **razanac**\n* **rijeka**\n* **rogoznica**\n* **rovinj**\n* **sali**\n* **savudrija**\n* **senj**\n* **sibenik**\n* **silba**\n* **slano**\n* **solin**\n* **solta**\n* **split**\n* **sreser**\n* **ston**\n* **sukosan**\n* **supetar**\n* **svetipetar**\n* **tar**\n* **tisno**\n* **trogir**\n* **trpanj**\n* **trsteno**\n* **tucepi**\n* **ugljan**\n* **umag**\n* **velaluka**\n* **velilosinj**\n* **vir**\n* **vis**\n* **vodice**\n* **vodnjan**\n* **vrsar**\n* **zadar**\n* **zagreb**\n* **zaostrog**\n* **zaton**\n* **zirje**\n* **zivogosce**\n* **zuljana**\n"
         }, {
+          "name" : "sea",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to specify the maximum number of meters from the sea\n"
+        }, {
+          "name" : "center",
+          "in" : "query",
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Possible to specify the maximum number of meters from the center\n"
+        }, {
           "name" : "max_price",
           "in" : "query",
           "type" : "integer",
