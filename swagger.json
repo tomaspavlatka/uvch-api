@@ -590,6 +590,62 @@
         }
       }
     },
+    "/clients/{client_id}/distances" : {
+      "get" : {
+        "summary" : "Distances for the client",
+        "description" : "Returns distances for the client\n",
+        "security" : [ {
+          "Basic" : [ ]
+        } ],
+        "tags" : [ "Client" ],
+        "parameters" : [ {
+          "name" : "client_id",
+          "description" : "Id of the client we want to tranfer GPS for",
+          "in" : "path",
+          "type" : "integer",
+          "format" : "int32",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "sea" : {
+                  "type" : "integer",
+                  "format" : "int32"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "Runtime error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/clients/{client_id}/gps" : {
       "get" : {
         "summary" : "Retrive the GPS coordinatinon",
@@ -1431,9 +1487,6 @@
         },
         "address" : {
           "$ref" : "#/definitions/Address"
-        },
-        "distances" : {
-          "$ref" : "#/definitions/Distances"
         },
         "min_price" : {
           "type" : "integer",
