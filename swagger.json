@@ -526,6 +526,11 @@
           "format" : "int32",
           "description" : "Possible to say how many people must be able to be accommodated in the accommodation unit \n\nThe calculation takes into consideration sum from regular and extra bed - both \"beds\" have same value. \n\nSo in case we have accommodation unit with 5 regular beds and 4 extra beds, the system consider this unit as suitable for up to 9 persons\n"
         }, {
+          "name" : "features",
+          "in" : "query",
+          "type" : "string",
+          "description" : "Possible to specify which extras / feature the client must have \n\nIn case you want to specify more than 1 feature, join them with comma (`,`), eg. `pool,animals`, order does not matter.\n\n#### Available options:\n* **air_condition**\n* **animals**\n* **balcony**\n* **bedding**\n* **concrete_beach**\n* **cooker**\n* **freezer**\n* **fridge**\n* **garage**\n* **grill**\n* **half_board**\n* **kettle**\n* **microwave**\n* **parking**\n* **pc**\n* **pebble_beach**\n* **phone**\n* **pool**\n* **radio**\n* **sand_beach**\n* **taxa**\n* **tennis**\n* **terrace**\n* **towels**\n* **tv_sat**\n* **washmachine**\n* **yard**\n"
+        }, {
           "name" : "start",
           "in" : "query",
           "type" : "string",
