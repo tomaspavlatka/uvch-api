@@ -469,6 +469,12 @@
         } ],
         "tags" : [ "Client" ],
         "parameters" : [ {
+          "name" : "include_booked",
+          "in" : "query",
+          "type" : "integer",
+          "number" : "int32",
+          "description" : "By default, the clients is based ONLY on available accommodation units. So client, who doesn't have any available accommodation unit will not be part of the return. \nBy using this filter and setting it any value, eg `include_booked=1`, you can bypass accommodation unit validation and all active units will be considered.\n"
+        }, {
           "name" : "destination",
           "in" : "query",
           "type" : "string",
